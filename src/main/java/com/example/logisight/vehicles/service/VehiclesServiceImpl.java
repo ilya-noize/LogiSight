@@ -66,8 +66,8 @@ public class VehiclesServiceImpl implements VehicleService {
         if (vehicleUpdateRequestDto.getLastMaintenance() != null) {
             vehicle.setLastMaintenance(vehicleUpdateRequestDto.getLastMaintenance());
         }
-        if (vehicleUpdateRequestDto.getAvailable() != null) {
-            vehicle.setAvailable(vehicleUpdateRequestDto.getAvailable());
+        if (vehicleUpdateRequestDto.getIsAvailable() != null) {
+            vehicle.setAvailable(vehicleUpdateRequestDto.getIsAvailable());
         }
 
         if (vehicle.getCurrentLoad() > vehicle.getMaxLoadCapacity()) {
