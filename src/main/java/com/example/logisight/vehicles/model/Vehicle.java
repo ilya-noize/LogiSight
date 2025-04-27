@@ -13,7 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -61,13 +60,12 @@ import java.util.Date;
  * </ul>
  */
 @Entity
-@Builder
+@Table(name = "vehicles")
 @Setter
 @Getter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-@Table(name = "vehicles")
-@Accessors(chain = true)
+@NoArgsConstructor
 public class Vehicle {
 
     @Id
