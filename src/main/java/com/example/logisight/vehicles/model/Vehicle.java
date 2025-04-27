@@ -8,6 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -55,7 +61,13 @@ import java.util.Date;
  * </ul>
  */
 @Entity
+@Builder
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "vehicles")
+@Accessors(chain = true)
 public class Vehicle {
 
     @Id
@@ -92,137 +104,4 @@ public class Vehicle {
 
     @Column(nullable = false)
     private boolean isAvailable; // доступно для использования
-
-    // конструкторы
-    public Vehicle() {
-    }
-
-    public Vehicle(String name, String registrationNumber, String vehicleType,
-                   double maxLoadCapacity, double speed, BigDecimal costPerKm) {
-        this.name = name;
-        this.registrationNumber = registrationNumber;
-        this.vehicleType = vehicleType;
-        this.maxLoadCapacity = maxLoadCapacity;
-        this.speed = speed;
-        this.costPerKm = costPerKm;
-        this.isAvailable = true;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public void setRegistrationNumber(String registrationNumber) {
-        this.registrationNumber = registrationNumber;
-    }
-
-    public String getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
-    }
-
-    public double getMaxLoadCapacity() {
-        return maxLoadCapacity;
-    }
-
-    public void setMaxLoadCapacity(double maxLoadCapacity) {
-        this.maxLoadCapacity = maxLoadCapacity;
-    }
-
-    public double getCurrentLoad() {
-        return currentLoad;
-    }
-
-    public void setCurrentLoad(double currentLoad) {
-        this.currentLoad = currentLoad;
-    }
-
-    public double getFuelConsumption() {
-        return fuelConsumption;
-    }
-
-    public void setFuelConsumption(double fuelConsumption) {
-        this.fuelConsumption = fuelConsumption;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
-    public BigDecimal getCostPerKm() {
-        return costPerKm;
-    }
-
-    public void setCostPerKm(BigDecimal costPerKm) {
-        this.costPerKm = costPerKm;
-    }
-
-    public Date getLastMaintenance() {
-        return lastMaintenance;
-    }
-
-    public void setLastMaintenance(Date lastMaintenance) {
-        this.lastMaintenance = lastMaintenance;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
-
-    // методы для расчета
-    public double calculateTravelTime(double distance) {
-        return distance / speed;
-    }
-
-    public BigDecimal calculateTravelCost(double distance) {
-        return costPerKm.multiply(BigDecimal.valueOf(distance));
-    }
-
-    public double calculateFuelConsumption(double distance) {
-        return (distance / 100) * fuelConsumption;
-    }
-
-    @Override
-    public String toString() {
-        return "Vehicle{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", registrationNumber='" + registrationNumber + '\'' +
-                ", vehicleType='" + vehicleType + '\'' +
-                ", maxLoadCapacity=" + maxLoadCapacity +
-                ", currentLoad=" + currentLoad +
-                ", fuelConsumption=" + fuelConsumption +
-                ", speed=" + speed +
-                ", costPerKm=" + costPerKm +
-                ", lastMaintenance=" + lastMaintenance +
-                ", isAvailable=" + isAvailable +
-                '}';
-    }
 }
