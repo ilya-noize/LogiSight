@@ -2,6 +2,7 @@ package com.example.logisight.trackingpoints.controller;
 
 import com.example.logisight.trackingpoints.dto.TrackingPointDto;
 import com.example.logisight.trackingpoints.service.TrackingPointService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class TrackingPointsController {
     private final TrackingPointService trackingPointService;
 
     @PostMapping
-    public TrackingPointDto create(@RequestBody TrackingPointDto point) {
+    public TrackingPointDto create(@RequestBody @Valid TrackingPointDto point) {
         return trackingPointService.createPoint(point);
     }
 
@@ -37,7 +38,7 @@ public class TrackingPointsController {
     }
 
     @PutMapping("/{id}")
-    public TrackingPointDto update(@PathVariable Long id, @RequestBody TrackingPointDto dto) {
+    public TrackingPointDto update(@PathVariable Long id, @RequestBody @Valid TrackingPointDto dto) {
         return trackingPointService.updatePoint(id, dto);
     }
 
