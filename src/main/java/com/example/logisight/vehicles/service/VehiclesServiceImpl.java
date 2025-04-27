@@ -9,7 +9,6 @@ import com.example.logisight.vehicles.mapper.VehicleMapper;
 import com.example.logisight.vehicles.model.Vehicle;
 import com.example.logisight.vehicles.repo.VehicleRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,18 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VehiclesServiceImpl implements VehicleService {
     private static final String VEHICLE_NOT_FOUND = "Транспортное средство не найдено с ID: %d";
-    private static final VehicleMapper vehicleMapper = VehicleMapper.INSTANCE;
-    private VehicleRepo vehicleRepository;
-
-    @Autowired
-    public VehiclesServiceImpl(VehicleRepo vehicleRepository) {
-        this.vehicleRepository = vehicleRepository;
-    }
+    private static final VehicleMapper MAPPER = VehicleMapper.INSTANCE;
+    private final VehicleRepo vehicleRepository;
 
     @Override
     public VehicleResponseDto createVehicle(VehicleRequestDto vehicleRequestDto) {
-        Vehicle vehicle = vehicleMapper.toEntity(vehicleRequestDto);
-        return vehicleMapper.toDto(vehicleRepository.save(vehicle));
+        Vehicle vehicle = MAPPER.toEntity(vehicleRequestDto);
+        return MAPPER.toDto(vehicleRepository.save(vehicle));
     }
 
     @Override
@@ -83,14 +77,14 @@ public class VehiclesServiceImpl implements VehicleService {
             throw new VehicleInvalidException("Стоимость за км не может быть отрицательной");
         }
 
-        return vehicleMapper.toDto(vehicleRepository.save(vehicle));
+        return MAPPER.toDto(vehicleRepository.save(vehicle));
     }
 
     @Override
     public VehicleResponseDto getVehicleById(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
             .orElseThrow(() -> new VehicleNotFoundException(String.format(VEHICLE_NOT_FOUND, id)));
-        return vehicleMapper.toDto(vehicle);
+        return MAPPER.toDto(vehicle);
     }
 
     @Override
@@ -98,7 +92,7 @@ public class VehiclesServiceImpl implements VehicleService {
         List<Vehicle> vehicles = vehicleRepository.findAll();
         if (vehicles.isEmpty())
             return Collections.emptyList();
-        return vehicles.stream().map(vehicleMapper::toDto).toList();
+        return vehicles.stream().map(MAPPER::toDto).toList();
     }
 
     @Override
@@ -113,7 +107,7 @@ public class VehiclesServiceImpl implements VehicleService {
         List<Vehicle> availableVehicles = vehicleRepository.findByIsAvailableTrue();
         if (availableVehicles.isEmpty())
             return Collections.emptyList();
-        return availableVehicles.stream().map(vehicleMapper::toDto).toList();
+        return availableVehicles.stream().map(MAPPER::toDto).toList();
     }
 
     @Override
@@ -121,7 +115,7 @@ public class VehiclesServiceImpl implements VehicleService {
         List<Vehicle> vehiclesByType = vehicleRepository.findByVehicleTypeIgnoreCase(vehicleType);
         if (vehiclesByType.isEmpty())
             return Collections.emptyList();
-        return vehiclesByType.stream().map(vehicleMapper::toDto).toList();
+        return vehiclesByType.stream().map(MAPPER::toDto).toList();
     }
 
     @Override
@@ -129,6 +123,6 @@ public class VehiclesServiceImpl implements VehicleService {
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new VehicleNotFoundException(String.format(VEHICLE_NOT_FOUND, id)));
         vehicle.setAvailable(!vehicle.isAvailable());
-        return vehicleMapper.toDto(vehicleRepository.save(vehicle));
+        return MAPPER.toDto(vehicleRepository.save(vehicle));
     }
 }

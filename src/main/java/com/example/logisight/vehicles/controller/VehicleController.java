@@ -5,7 +5,6 @@ import com.example.logisight.vehicles.dto.VehicleResponseDto;
 import com.example.logisight.vehicles.dto.VehicleUpdateRequestDto;
 import com.example.logisight.vehicles.service.VehicleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +24,7 @@ import java.util.List;
 @RequestMapping("/api/vehicles")
 public class VehicleController {
 
-    private VehicleService vehicleService;
-
-    @Autowired
-    public VehicleController(VehicleService vehicleService) {
-        this.vehicleService = vehicleService;
-    }
+    private final VehicleService vehicleService;
 
     // Получение списка всех транспортных средств
     @GetMapping

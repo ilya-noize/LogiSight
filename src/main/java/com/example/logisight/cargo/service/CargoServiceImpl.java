@@ -10,6 +10,7 @@ import com.example.logisight.cargo.mapper.CargoMapper;
 import com.example.logisight.cargo.model.Cargo;
 import com.example.logisight.cargo.model.CargoStatus;
 import com.example.logisight.cargo.repo.CargoRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -18,13 +19,11 @@ import java.util.List;
 import static com.example.logisight.cargo.service.TrackNumberGenerator.generateTrackNumber;
 
 @Service
+@RequiredArgsConstructor
 public class CargoServiceImpl implements CargoService {
-    private static final String CARGO_N_NOT_FOUND = "Груз %d не найден";
+    private static final String CARGO_N_NOT_FOUND = "Груз с ID %d не найден";
+    private static final CargoMapper MAPPER = CargoMapper.INSTANCE;
     private final CargoRepo cargoRepo;
-
-    public CargoServiceImpl(CargoRepo cargoRepo) {
-        this.cargoRepo = cargoRepo;
-    }
 
     @Override
     public CargoResponseDto createCargo(CargoRequestDto cargoRequestDto) {
@@ -33,12 +32,12 @@ public class CargoServiceImpl implements CargoService {
             trackNumber = generateTrackNumber();
         } while (cargoRepo.existsByTrackingNumberIgnoreCase(trackNumber));
 
-        Cargo cargo = CargoMapper.INSTANCE.toEntity(cargoRequestDto);
+        Cargo cargo = MAPPER.toEntity(cargoRequestDto);
         cargo.setStatus(CargoStatus.CREATED);
         cargo.setTrackingNumber(trackNumber);
         cargoRepo.save(cargo);
 
-        return CargoMapper.INSTANCE.toDTO(cargo);
+        return MAPPER.toDTO(cargo);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class CargoServiceImpl implements CargoService {
         if (request.specialInstructions() != null) {
             existingCargo.setSpecialInstructions(request.specialInstructions());
         }
-        return CargoMapper.INSTANCE.toDTO(cargoRepo.save(existingCargo));
+        return MAPPER.toDTO(cargoRepo.save(existingCargo));
     }
 
     @Override
@@ -92,7 +91,7 @@ public class CargoServiceImpl implements CargoService {
                 throw new CargoStatusInvalidException(String.format("Статус груза %d не определён", id));
             }
         }
-        return CargoMapper.INSTANCE.toDTO(cargoRepo.save(existingCargo));
+        return MAPPER.toDTO(cargoRepo.save(existingCargo));
     }
 
     @Override
@@ -102,14 +101,14 @@ public class CargoServiceImpl implements CargoService {
         if (request.currentLocation() != null) {
             existingCargo.setCurrentLocation(request.currentLocation());
         }
-        return CargoMapper.INSTANCE.toDTO(cargoRepo.save(existingCargo));
+        return MAPPER.toDTO(cargoRepo.save(existingCargo));
     }
 
     @Override
     public CargoResponseDto getCargo(Long id) {
         Cargo existingCargo = cargoRepo.findById(id)
                 .orElseThrow(() -> new CargoNotFoundException(String.format(CARGO_N_NOT_FOUND, id)));
-        return CargoMapper.INSTANCE.toDTO(existingCargo);
+        return MAPPER.toDTO(existingCargo);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class CargoServiceImpl implements CargoService {
         if (existingAllCargo.isEmpty()) {
             return Collections.emptyList();
         }
-        return existingAllCargo.stream().map(CargoMapper.INSTANCE::toDTO).toList();
+        return existingAllCargo.stream().map(MAPPER::toDTO).toList();
     }
 
     @Override
