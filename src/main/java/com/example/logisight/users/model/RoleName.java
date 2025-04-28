@@ -6,5 +6,5 @@ public enum RoleName {
     ROLE_OPERATOR,
     ROLE_ROUTER,
     ROLE_ADMIN,
-    ROLE_SUPERUSER;
+    ROLE_SUPERUSER
 }

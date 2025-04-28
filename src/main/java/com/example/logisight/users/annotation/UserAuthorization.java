@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@PreAuthorize("hasRole(T(com.example.logisight.users.model.Role).ROLE_USER)")
+@PreAuthorize("hasRole(T(com.example.logisight.users.model.RoleName).ROLE_USER)")
 public @interface UserAuthorization {
 }
