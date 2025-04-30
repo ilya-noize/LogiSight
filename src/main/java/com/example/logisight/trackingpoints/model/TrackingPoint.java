@@ -1,10 +1,13 @@
 package com.example.logisight.trackingpoints.model;
 
+import com.example.logisight.cargo.model.Cargo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -33,18 +36,17 @@ public class TrackingPoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private Double latitude;
+    private String description;
 
     @Column(nullable = false)
-    private Double longitude;
+    private Double latitude; // y
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    private Double longitude; // x
 
     @Column(nullable = false)
     private boolean active;

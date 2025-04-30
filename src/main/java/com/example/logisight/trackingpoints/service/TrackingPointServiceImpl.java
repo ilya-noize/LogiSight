@@ -2,6 +2,7 @@ package com.example.logisight.trackingpoints.service;
 
 import com.example.logisight.trackingpoints.dto.TrackingPointDto;
 import com.example.logisight.trackingpoints.exception.TrackingPointNotFoundException;
+import com.example.logisight.trackingpoints.mapper.TrackingPointMapper;
 import com.example.logisight.trackingpoints.model.TrackingPoint;
 import com.example.logisight.trackingpoints.repo.TrackingPointRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +14,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TrackingPointServiceImpl implements TrackingPointService {
-
-    private static final String TRACKING_POINT_NOT_FOUND = "Контрольная точка с ID %d не найдена.";
+    private static final TrackingPointMapper MAPPER = TrackingPointMapper.INSTANCE;
     private final TrackingPointRepository repository;
 
     @Override
     public TrackingPointDto createPoint(TrackingPointDto dto) {
-        return TrackingPointDto.fromEntity(repository.save(dto.toEntity()));
+        TrackingPoint trackingPoint = MAPPER.toEntity(dto);
+        return MAPPER.toDto(repository.save(trackingPoint));
     }
 
     @Override
     public TrackingPointDto getPointById(Long id) {
         TrackingPoint existTrackingPoint = repository.findById(id)
-                .orElseThrow(() -> new TrackingPointNotFoundException(String.format(TRACKING_POINT_NOT_FOUND, id)));
-        return TrackingPointDto.fromEntity(existTrackingPoint);
+                .orElseThrow(() -> new TrackingPointNotFoundException(String.format(TRACKING_POINT_N_NOT_FOUND, id)));
+        return MAPPER.toDto(existTrackingPoint);
     }
 
     @Override
@@ -34,13 +35,13 @@ public class TrackingPointServiceImpl implements TrackingPointService {
         List<TrackingPoint> trackingPoints = repository.findAll();
         if (trackingPoints.isEmpty())
             return Collections.emptyList();
-        return trackingPoints.stream().map(TrackingPointDto::fromEntity).toList();
+        return trackingPoints.stream().map(MAPPER::toDto).toList();
     }
 
     @Override
     public TrackingPointDto updatePoint(Long id, TrackingPointDto dto) {
         TrackingPoint trackingPoint = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(TRACKING_POINT_NOT_FOUND));
+                .orElseThrow(() -> new TrackingPointNotFoundException(String.format(TRACKING_POINT_N_NOT_FOUND, id)));
 
         if (dto.getName() != null) {
             trackingPoint.setName(dto.getName());
@@ -54,13 +55,13 @@ public class TrackingPointServiceImpl implements TrackingPointService {
 
         trackingPoint.setActive(dto.isActive());
 
-        return TrackingPointDto.fromEntity(repository.save(trackingPoint));
+        return MAPPER.toDto(repository.save(trackingPoint));
     }
 
     @Override
     public void deletePoint(Long id) {
         TrackingPoint trackingPoint = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(TRACKING_POINT_NOT_FOUND));
+                .orElseThrow(() -> new TrackingPointNotFoundException(String.format(TRACKING_POINT_N_NOT_FOUND, id)));
         repository.delete(trackingPoint);
     }
 }
