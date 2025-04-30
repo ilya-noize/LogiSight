@@ -4,7 +4,7 @@ public enum RoleName {
     ROLE_USER,
     ROLE_DRIVER,
     ROLE_OPERATOR,
-    ROLE_ROUTER,
+    ROLE_MANAGER,
     ROLE_ADMIN,
     ROLE_SUPERUSER
 }

@@ -3,13 +3,15 @@ package com.example.logisight.cargo.mapper;
 import com.example.logisight.cargo.dto.CargoRequestDto;
 import com.example.logisight.cargo.dto.CargoResponseDto;
 import com.example.logisight.cargo.model.Cargo;
+import com.example.logisight.trackingpoints.mapper.TrackingPointMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
-@Mapper(componentModel = SPRING)
+@Mapper(componentModel = SPRING,
+        uses = {TrackingPointMapper.class})
 public interface CargoMapper {
     CargoMapper INSTANCE = Mappers.getMapper(CargoMapper.class);
 

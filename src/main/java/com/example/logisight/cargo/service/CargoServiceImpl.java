@@ -1,6 +1,5 @@
 package com.example.logisight.cargo.service;
 
-import com.example.logisight.cargo.dto.CargoCurrentLocationRequestDto;
 import com.example.logisight.cargo.dto.CargoRequestDto;
 import com.example.logisight.cargo.dto.CargoResponseDto;
 import com.example.logisight.cargo.dto.CargoUpdateRequestDto;
@@ -10,6 +9,9 @@ import com.example.logisight.cargo.mapper.CargoMapper;
 import com.example.logisight.cargo.model.Cargo;
 import com.example.logisight.cargo.model.CargoStatus;
 import com.example.logisight.cargo.repo.CargoRepo;
+import com.example.logisight.trackingpoints.exception.TrackingPointNotFoundException;
+import com.example.logisight.trackingpoints.model.TrackingPoint;
+import com.example.logisight.trackingpoints.repo.TrackingPointRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.example.logisight.cargo.service.TrackNumberGenerator.generateTrackNumber;
+import static com.example.logisight.trackingpoints.service.TrackingPointServiceImpl.TRACKING_POINT_N_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class CargoServiceImpl implements CargoService {
-    private static final String CARGO_N_NOT_FOUND = "Груз с ID %d не найден";
     private static final CargoMapper MAPPER = CargoMapper.INSTANCE;
     private final CargoRepo cargoRepo;
+    private final TrackingPointRepository trackingPointRepo;
 
     @Override
     public CargoResponseDto createCargo(CargoRequestDto cargoRequestDto) {
@@ -57,8 +60,8 @@ public class CargoServiceImpl implements CargoService {
         if (request.recipient() != null) {
             existingCargo.setRecipient(request.recipient());
         }
-        if (request.currentLocation() != null) {
-            existingCargo.setCurrentLocation(request.currentLocation());
+        if (request.trackingPoint() != null) {
+            existingCargo.setTrackingPoints(updateTrackingPoints(existingCargo, request.trackingPoint().getId()));
         }
         if (request.deliveryAddress() != null) {
             existingCargo.setDeliveryAddress(request.deliveryAddress());
@@ -95,13 +98,19 @@ public class CargoServiceImpl implements CargoService {
     }
 
     @Override
-    public CargoResponseDto updateCargoCurrentLocation(CargoCurrentLocationRequestDto request) {
-        Cargo existingCargo = cargoRepo.findById(request.id())
-                .orElseThrow(() -> new CargoNotFoundException(String.format(CARGO_N_NOT_FOUND, request.id())));
-        if (request.currentLocation() != null) {
-            existingCargo.setCurrentLocation(request.currentLocation());
-        }
+    public CargoResponseDto updateCargoCurrentLocation(Long id, Long pointId) {
+        Cargo existingCargo = cargoRepo.findById(id)
+                .orElseThrow(() -> new CargoNotFoundException(String.format(CARGO_N_NOT_FOUND, id)));
+        existingCargo.setTrackingPoints(updateTrackingPoints(existingCargo, pointId));
         return MAPPER.toDTO(cargoRepo.save(existingCargo));
+    }
+
+    private List<TrackingPoint> updateTrackingPoints(Cargo existingCargo, Long pointId) {
+        TrackingPoint trackingPoint = trackingPointRepo.findById(pointId)
+            .orElseThrow(() -> new TrackingPointNotFoundException(String.format(TRACKING_POINT_N_NOT_FOUND, pointId)));
+        List<TrackingPoint> trackingPoints = existingCargo.getTrackingPoints();
+        trackingPoints.add(trackingPoint);
+        return trackingPoints;
     }
 
     @Override
