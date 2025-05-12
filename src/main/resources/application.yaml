@@ -1,5 +1,7 @@
 
-
+jwt:
+  secret: secret
+  lifetime: 30m
 spring:
   application:
     name: logisight
@@ -32,29 +34,29 @@ spring:
     oauth2:
       client:
         registration:
-          logto:
-            client-name: logto
-            client-id: n4wfabzn5c8u8koqpufbb
-            client-secret: Q0z45qDbarbiqsGwGv6VmywlgaibNJJm
-            redirect-uri: {baseUrl}/login/oauth2/code/{registrationId}
-            authorization-grant-type: authorization_code
-            scope:
-              - openid
-              - profile
-              - email
-              - offline_access
-            provider: logto
+#          logto:
+#            client-name: logto
+#            client-id: n4wfabzn5c8u8koqpufbb
+#            client-secret: Q0z45qDbarbiqsGwGv6VmywlgaibNJJm
+#            redirect-uri: {baseUrl}/login/oauth2/code/{registrationId}
+#            authorization-grant-type: authorization_code
+#            scope:
+#              - openid
+#              - profile
+#              - email
+#              - offline_access
+#            provider: logto
           github:
             clientId: github-client-id
             clientSecret: github-client-secret
           google:
             client-id: google-client-id
             client-secret: google-client-secret
-        provider:
-          logto:
-            issuer-uri: https://it0vx8.logto.app/oidc
-            authorization-uri: https://it0vx8.logto.app/oidc/auth
-            jwk-set-uri: https://it0vx8.logto.app/oidc/jwks
+#        provider:
+#          logto:
+#            issuer-uri: https://it0vx8.logto.app/oidc
+#            authorization-uri: https://it0vx8.logto.app/oidc/auth
+#            jwk-set-uri: https://it0vx8.logto.app/oidc/jwks
 
   #logging:
 #  level:
