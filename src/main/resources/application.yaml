@@ -28,7 +28,35 @@ spring:
         trace: false
         web-allow-others: false
 
-#logging:
+  security:
+    oauth2:
+      client:
+        registration:
+          logto:
+            client-name: logto
+            client-id: n4wfabzn5c8u8koqpufbb
+            client-secret: Q0z45qDbarbiqsGwGv6VmywlgaibNJJm
+            redirect-uri: {baseUrl}/login/oauth2/code/{registrationId}
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+              - email
+              - offline_access
+            provider: logto
+          github:
+            clientId: github-client-id
+            clientSecret: github-client-secret
+          google:
+            client-id: google-client-id
+            client-secret: google-client-secret
+        provider:
+          logto:
+            issuer-uri: https://it0vx8.logto.app/oidc
+            authorization-uri: https://it0vx8.logto.app/oidc/auth
+            jwk-set-uri: https://it0vx8.logto.app/oidc/jwks
+
+  #logging:
 #  level:
 #    root: debug
 #    com:
@@ -36,3 +64,16 @@ spring:
 #        hikari: debug
 #  file:
 #    path: ./log.txt
+
+
+#  spring.security.oauth2.client.registration.logto.client-name=logto
+#  spring.security.oauth2.client.registration.logto.client-id=n4wfabzn5c8u8koqpufbb
+#  spring.security.oauth2.client.registration.logto.client-secret=Q0z45qDbarbiqsGwGv6VmywlgaibNJJm
+#  spring.security.oauth2.client.registration.logto.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+#  spring.security.oauth2.client.registration.logto.authorization-grant-type=authorization_code
+#  spring.security.oauth2.client.registration.logto.scope=openid,profile,email,offline_access
+#  spring.security.oauth2.client.registration.logto.provider=logto
+#
+#  spring.security.oauth2.client.provider.logto.issuer-uri=https://it0vx8.logto.app/oidc
+#  spring.security.oauth2.client.provider.logto.authorization-uri=https://it0vx8.logto.app/oidc/auth
+#  spring.security.oauth2.client.provider.logto.jwk-set-uri=https://it0vx8.logto.app/oidc/jwks
