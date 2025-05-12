@@ -5,6 +5,9 @@ import com.example.logisight.users.annotation.DriverAuthorization;
 import com.example.logisight.users.annotation.ManagerAuthorization;
 import com.example.logisight.users.annotation.RootAuthorization;
 import com.example.logisight.users.annotation.UserAuthorization;
+import com.example.logisight.users.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ui.Model;
 import com.example.logisight.users.dto.UserFullResponseDto;
 import com.example.logisight.users.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserDetailsServiceImpl userService;
+    private final UserService userService;
 
     @GetMapping("/public")
     public String publicEndpoint() {
@@ -61,5 +67,10 @@ public class UserController {
     @RootAuthorization
     public String rootEndpoint(@PathVariable Long id) {
         return "Root Panel";
+    }
+
+    @GetMapping
+    public String user(Model model, Principal principal) {
+        return userService.user(model, principal);
     }
 }
