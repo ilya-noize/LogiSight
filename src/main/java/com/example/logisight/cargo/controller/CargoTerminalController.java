@@ -1,6 +1,5 @@
 package com.example.logisight.cargo.controller;
 
-import com.example.logisight.cargo.dto.CargoCurrentLocationRequestDto;
 import com.example.logisight.cargo.dto.CargoResponseDto;
 import com.example.logisight.cargo.service.CargoService;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +19,8 @@ public class CargoTerminalController {
         return cargoService.updateCargoStatus(id, status);
     }
 
-    @PatchMapping("/{id}/{location}")
-    public CargoResponseDto updateCargoCurrentLocation(@PathVariable Long id, @PathVariable String location) {
-        CargoCurrentLocationRequestDto cargoCurrentLocationRequestDto = new CargoCurrentLocationRequestDto(id, location);
-        return cargoService.updateCargoCurrentLocation(cargoCurrentLocationRequestDto);
+    @PatchMapping("/{id}/tracking/{pointId}")
+    public CargoResponseDto updateCargoCurrentLocation(@PathVariable Long id, @PathVariable Long pointId) {
+        return cargoService.updateCargoCurrentLocation(id, pointId);
     }
 }

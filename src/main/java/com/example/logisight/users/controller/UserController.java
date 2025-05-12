@@ -1,35 +1,65 @@
 package com.example.logisight.users.controller;
 
 import com.example.logisight.users.annotation.AdminAuthorization;
+import com.example.logisight.users.annotation.DriverAuthorization;
+import com.example.logisight.users.annotation.ManagerAuthorization;
 import com.example.logisight.users.annotation.RootAuthorization;
 import com.example.logisight.users.annotation.UserAuthorization;
+import com.example.logisight.users.dto.UserFullResponseDto;
+import com.example.logisight.users.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserDetailsServiceImpl userService;
+
     @GetMapping("/public")
     public String publicEndpoint() {
         return "Общедоступный endpoint";
     }
 
-    @GetMapping("/user")
+    // Мониторинг заказов пользователя
+    // Создание заказов
+    @GetMapping("/login/{login}")
     @UserAuthorization
-    public String userEndpoint() {
-        return "Доступ только для авторизованных пользователей";
+    public UserFullResponseDto getUserAccount(@PathVariable String login) {
+        return userService.getUserAccount(login);
     }
 
-    @GetMapping("/admin")
+    // Мониторинг входящей/исходящей информации от менеджера
+    // Мониторинг рейсов
+    @GetMapping("/driver/{id}")
+    @DriverAuthorization
+    public String getDriverAccount(@PathVariable Long id) {
+        return "Driver Panel";
+    }
+
+    // Мониторинг входящей/исходящей информации от пользователей и водителей
+    // Управление рейсами, грузами
+    @GetMapping("/manager/{id}")
+    @ManagerAuthorization
+    public String getManagerAccount(@PathVariable Long id) {
+        return "Manager Panel";
+    }
+
+    // Управление доступом для менеджеров и водителей
+    // Руководящая позиция в компании
+    @GetMapping("/admin/{id}")
     @AdminAuthorization
-    public String adminEndpoint() {
-        return "Доступ только для администраторов";
+    public String getAllUserAccount(@PathVariable Long id) {
+        return "Admin Panel";
     }
 
-    @GetMapping("/root")
+    // Управление доступами всех пользователей - УЛЬТРА режим
+    @GetMapping("/root/{id}")
     @RootAuthorization
-    public String rootEndpoint() {
-        return "Доступ только для суперпользователей";
+    public String rootEndpoint(@PathVariable Long id) {
+        return "Root Panel";
     }
 }

@@ -12,10 +12,8 @@ public class CargoRequestDto {
     private String sender;
     private String recipient;
     private String pickupAddress;
-    private String currentLocation;
     private String deliveryAddress;
     private LocalDate pickupDate;
-    private LocalDate deliveryDate;
     private Boolean fragile;
     private String specialInstructions;
 }
