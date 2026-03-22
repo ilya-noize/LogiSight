@@ -1,4 +1,4 @@
-package com.example.logisight.users.annotation;
+package com.example.logisight.users.controller.annotation;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@PreAuthorize("hasRole(T(com.example.logisight.users.model.RoleName).ROLE_USER)")
-public @interface UserAuthorization {
+@PreAuthorize("hasRole(T(com.example.logisight.users.db.RoleName).ROLE_SUPERUSER)")
+public @interface RootAuthorization {
 }
