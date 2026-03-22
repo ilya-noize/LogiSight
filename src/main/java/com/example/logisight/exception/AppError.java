@@ -1,4 +1,4 @@
-package com.example.logisight.users.dto;
+package com.example.logisight.exception;
 
 import java.util.Date;
 
