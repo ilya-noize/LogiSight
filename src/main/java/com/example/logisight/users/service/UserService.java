@@ -1,72 +1,49 @@
 package com.example.logisight.users.service;
 
-import com.example.logisight.users.model.Role;
+import com.example.logisight.users.db.RoleEntity;
+import com.example.logisight.users.db.RoleName;
+import com.example.logisight.users.db.RoleRepository;
+import com.example.logisight.users.db.UserEntity;
+import com.example.logisight.users.db.UserRepository;
+import com.example.logisight.users.model.UserMapper;
 import com.example.logisight.users.model.User;
-import com.example.logisight.users.repo.RoleRepository;
-import com.example.logisight.users.repo.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-
-import javax.management.relation.RoleNotFoundException;
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.example.logisight.users.model.RoleName.ROLE_USER;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "Пользователь %s не найден".formatted(username)
-                ));
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                getAuthorities(user)
-        );
-    }
-
-    public void createNewUser(User user) throws RoleNotFoundException {
-        String role = ROLE_USER.toString();
-        Set<Role> roles = Set.of(roleRepository.findByName(role).orElseThrow(
-                () -> new RoleNotFoundException("Role %s not found".formatted(role))
-        ));
-        user.setRoles(roles);
-        userRepository.save(user);
-    }
-    public String user(Model model, Principal principal) {
-        if (principal instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) principal;
-            OAuth2User oauth2User = token.getPrincipal();
-            Map<String, Object> attributes = oauth2User.getAttributes();
-
-            model.addAttribute("username", attributes.get("username"));
-            model.addAttribute("email", attributes.get("email"));
-            model.addAttribute("sub", attributes.get("sub"));
+    public User registration(User domain) {
+        if (userRepository.existsByUsername(domain.username())) {
+            throw new ValidationException("Login already taken");
         }
+        UserEntity user = userMapper.toEntity(domain);
+        RoleEntity role = roleRepository.findByName(RoleName.ROLE_USER);
+        if(user.getRoles().isEmpty()) {
+            user.getRoles().add(role);
+        }
+        user.setPassword(passwordEncoder.encode(domain.password()));
+        userRepository.save(user);
 
-        return "user";
+        return userMapper.toDomain(user);
     }
 
-    private List<? extends GrantedAuthority> getAuthorities(User user) {
-        return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+    public User getById(Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Not such User ID=%s".formatted(id))
+        );
+        return userMapper.toDomain(user);
+    }
+
+    public User getMe() {
+        return null; //TODO: implement me
     }
 }
