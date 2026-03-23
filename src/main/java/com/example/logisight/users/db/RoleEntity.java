@@ -1,4 +1,4 @@
-package com.example.logisight.users.model;
+package com.example.logisight.users.db;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role implements GrantedAuthority {
+public class RoleEntity implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,5 +1,3 @@
-
-
 spring:
   application:
     name: logisight
@@ -27,12 +25,7 @@ spring:
       settings:
         trace: false
         web-allow-others: false
-
-#logging:
-#  level:
-#    root: debug
-#    com:
-#      zaxxer:
-#        hikari: debug
-#  file:
-#    path: ./log.txt
+jwt:
+  token:
+    key: "secret"
+    time: 360
